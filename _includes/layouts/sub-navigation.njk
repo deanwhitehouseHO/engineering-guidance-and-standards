@@ -8,3 +8,9 @@
 
   {{ super() }}
 {% endblock %}
+
+{% block scripts %}
+  {% mermaid_js %}
+
+  {{ super() }}
+{% endblock %}

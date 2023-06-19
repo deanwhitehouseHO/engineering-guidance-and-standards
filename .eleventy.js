@@ -39,7 +39,29 @@ module.exports = function(eleventyConfig) {
             }
         },
         stylesheets: ['/styles/base.css'],
-    })
+    });
+
+    // -- Mermaid setup https://github.com/KevinGimbel/eleventy-plugin-mermaid/blob/main/.eleventy.js
+    eleventyConfig.addPassthroughCopy({
+      "node_modules/mermaid/dist/": "/assets/mermaid/"
+    });
+
+    var options = {
+      mermaid_js_src : "/assets/mermaid/mermaid.esm.min.mjs"
+    };
+    eleventyConfig.addShortcode("mermaid_js", () => {
+      let src = options.mermaid_js_src;
+      return `<script type="module" async>import mermaid from "${src}";document.addEventListener('DOMContentLoaded', mermaid.initialize({startOnLoad:true}));</script>`
+    });
+
+    eleventyConfig.addMarkdownHighlighter((str, language) => {
+      if (language === "mermaid") {
+        return `<pre class="mermaid" tabindex="0">${str}</pre>`;
+      }
+
+      return `<pre class="x-govuk-code x-govuk-code--block ${language}" tabindex="0">${str}</pre>`;
+    });
+    // -- end Mermaid setup
 
     eleventyConfig.addFilter("postDate", (dateObj) => {
         return DateTime.fromJSDate(dateObj).toLocaleString(DateTime.DATE_FULL);
